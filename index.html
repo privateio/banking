@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>NORTVAL PRIVATE BANK</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Playfair Display -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navyDark: '#070d18',
+              navyCard: '#0f172a',
+              navyInput: '#1b273f',
+              green: '#10b981',
+              greenHover: '#059669',
+              greenBright: '#00e676',
+              accentRed: '#ef4444'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070d18;
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      user-select: none;
+    }
+
+    /* Transitions & Animations */
+    .fade-in {
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Custom Spinner */
+    .spinner {
+      border: 3px solid rgba(16, 185, 129, 0.15);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border-left-color: #10b981;
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Clean PIN Input Styling */
+    .pin-box {
+      width: 3.25rem;
+      height: 3.75rem;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #10b981;
+      background-color: #1b273f;
+      border: 1.5px solid #374151;
+      border-radius: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .pin-box:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+      background-color: #142034;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #070d18;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1b273f;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #374151;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden antialiased">
+
+  <!-- ================= TOP HEADER NAVIGATION ================= -->
+  <header class="w-full bg-[#070d18]/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-800/60 px-4 py-3.5 sm:px-8 flex items-center justify-between">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="goToDashboardIfLoggedIn()">
+      <!-- Bank Emblem SVG -->
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-md">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+        </svg>
+      </div>
+      <div>
+        <h1 class="font-serif font-bold text-lg sm:text-xl tracking-wider text-white uppercase leading-tight">NORTVAL</h1>
+        <p class="text-[10px] sm:text-xs text-gray-400 font-medium tracking-widest uppercase">PRIVATE BANKING • EST. 1894</p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-3">
+      <button id="settings-btn" onclick="openSettingsPage()" class="hidden p-2.5 rounded-xl bg-brand-navyCard border border-gray-700/60 text-gray-300 hover:text-emerald-400 hover:border-emerald-500/50 transition duration-200 focus:outline-none" title="Account Settings">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT CONTAINER ================= -->
+  <main class="flex-grow flex items-center justify-center p-4 sm:p-6 max-w-4xl mx-auto w-full">
+
+    <!-- STEP 1: LOGIN SCREEN -->
+    <div id="screen-login" class="fade-in w-full max-w-md bg-brand-navyCard border border-gray-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl my-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-white mb-2">Private Client Login</h2>
+        <p class="text-xs sm:text-sm text-gray-400">Enter authorized credentials to continue</p>
+      </div>
+
+      <form onsubmit="handleInitialLogin(event)" class="space-y-5">
+        <div>
+          <label class="block text-xs font-medium text-gray-300 uppercase tracking-wider mb-2">Username</label>
+          <input type="text" id="input-username" value="harriet020" required class="w-full bg-brand-navyInput border border-gray-700/70 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-gray-300 uppercase tracking-wider mb-2">Password</label>
+          <input type="password" id="input-password" value="Harr1et0921" required class="w-full bg-brand-navyInput border border-gray-700/70 rounded-xl px-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500 transition text-sm">
+        </div>
+
+        <button type="submit" class="w-full mt-2 bg-brand-green hover:bg-brand-greenHover text-gray-950 font-bold py-3.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-emerald-900/30 text-sm tracking-wide">
+          Continue
+        </button>
+      </form>
+      
+      <div class="mt-6 pt-5 border-t border-gray-800 text-center">
+        <p class="text-xs text-gray-500">Demo Credentials Pre-filled: <span class="text-gray-400">harriet020 / Harr1et0921</span> (PIN: <span class="text-emerald-400 font-mono">0921</span>)</p>
+      </div>
+    </div>
+
+    <!-- LOADING SCREEN 1: VERIFYING CREDENTIALS -->
+    <div id="screen-loading-1" class="hidden fade-in flex flex-col items-center justify-center py-16 text-center">
+      <div class="spinner mb-4"></div>
+      <p class="text-sm font-semibold text-white tracking-wide">Verifying credentials...</p>
+      <p class="text-xs text-gray-400 mt-1">Establishing secure SSL connection</p>
+    </div>
+
+    <!-- STEP 2: DEDICATED PIN SECURITY SCREEN -->
+    <div id="screen-pin" class="hidden fade-in w-full max-w-md bg-brand-navyCard border border-gray-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl my-auto">
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl mx-auto mb-4 flex items-center justify-center text-emerald-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-serif font-bold text-white mb-2">Security Authentication</h2>
+        <p class="text-xs sm:text-sm text-gray-400">Enter your 4-digit security PIN</p>
+      </div>
+
+      <form onsubmit="handlePinSubmit(event)" class="space-y-6">
+        <div class="flex justify-center items-center space-x-3 sm:space-x-4 my-6">
+          <input type="password" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="pin-box" id="pin-1" onkeyup="pinBoxInput(this, 'pin-2', null)" autofocus>
+          <input type="password" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="pin-box" id="pin-2" onkeyup="pinBoxInput(this, 'pin-3', 'pin-1')">
+          <input type="password" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="pin-box" id="pin-3" onkeyup="pinBoxInput(this, 'pin-4', 'pin-2')">
+          <input type="password" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="pin-box" id="pin-4" onkeyup="pinBoxInput(this, null, 'pin-3')">
+        </div>
+
+        <button type="submit" class="w-full bg-brand-green hover:bg-brand-greenHover text-gray-950 font-bold py-3.5 px-4 rounded-xl transition duration-200 shadow-lg shadow-emerald-900/30 text-sm tracking-wide">
+          Authorize Session
+        </button>
+      </form>
+    </div>
+
+    <!-- LOADING SCREEN 2: AUTHENTICATING PIN -->
+    <div id="screen-loading-2" class="hidden fade-in flex flex-col items-center justify-center py-16 text-center">
+      <div class="spinner mb-4"></div>
+      <p class="text-sm font-semibold text-white tracking-wide">Authenticating PIN...</p>
+      <p class="text-xs text-gray-400 mt-1">Decrypting client vault</p>
+    </div>
+
+    <!-- STEP 3: DASHBOARD SCREEN -->
+    <div id="screen-dashboard" class="hidden fade-in w-full space-y-6 py-2">
+      
+      <!-- Account Frozen Alert Banner (Hidden by default unless toggled) -->
+      <div id="frozen-banner" class="hidden bg-red-950/70 border border-red-800/80 text-red-200 p-4 rounded-2xl flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <p class="text-sm font-bold text-red-100">Account Restricted / Inactive</p>
+            <p class="text-xs text-red-300">Outgoing wire transfers and active credit lines are currently restricted.</p>
+          </div>
+        </div>
+        <button onclick="openSupportModal()" class="text-xs bg-red-800/50 hover:bg-red-800 text-red-100 px-3 py-1.5 rounded-lg border border-red-700 transition shrink-0">Support</button>
+      </div>
+
+      <!-- User Profile Header Card -->
+      <div class="bg-gradient-to-r from-blue-900/50 via-brand-navyCard to-slate-900/80 border border-gray-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+        <div class="flex items-center space-x-4 mb-6 relative z-10">
+          <img id="user-avatar-display" src="" alt="Profile Avatar" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover border-2 border-emerald-400 shadow-md">
+          <div>
+            <p class="text-xs sm:text-sm font-medium text-emerald-400 uppercase tracking-wider">Welcome Back</p>
+            <h2 id="user-name-display" class="text-xl sm:text-3xl font-serif font-bold text-white tracking-tight">Harriet Vance</h2>
+          </div>
+        </div>
+
+        <div class="space-y-1 relative z-10">
+          <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Available Balance</p>
+          <div class="text-3xl sm:text-5xl font-bold text-white font-sans tracking-tight">
+            <span id="account-balance-display">$50,000.00</span> <span id="currency-display" class="text-lg sm:text-2xl font-normal text-gray-300">USD</span>
+          </div>
+        </div>
+
+        <!-- Account Number Card Badge -->
+        <div class="mt-6 pt-5 border-t border-gray-800/80 flex flex-wrap items-center justify-between gap-3 relative z-10">
+          <div class="flex items-center space-x-3 bg-brand-navyDark/70 px-4 py-2.5 rounded-2xl border border-gray-800">
+            <div class="text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-[10px] text-gray-400 uppercase">Your Account Number</p>
+              <p class="text-xs font-mono font-bold text-white">48109-882-1</p>
+            </div>
+          </div>
+          <span id="account-status-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/50">
+            • Active Tier 1
+          </span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex border-b border-gray-800 space-x-4 overflow-x-auto pb-1">
+        <button id="tab-btn-actions" onclick="switchDashboardTab('actions')" class="px-4 py-2 text-sm font-semibold text-emerald-400 border-b-2 border-emerald-400 transition whitespace-nowrap">Quick Actions</button>
+        <button id="tab-btn-transfer" onclick="switchDashboardTab('transfer')" class="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">Wire Transfer</button>
+        <button id="tab-btn-history" onclick="switchDashboardTab('history')" class="px-4 py-2 text-sm font-semibold text-gray-400 hover:text-white border-b-2 border-transparent transition whitespace-nowrap">Activity & History</button>
+      </div>
+
+      <!-- TAB 1: QUICK ACTIONS GRID -->
+      <div id="tab-content-actions" class="space-y-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <!-- Action 1: Wire Transfer -->
+          <div onclick="switchDashboardTab('transfer')" class="bg-brand-navyCard border border-gray-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition duration-200 hover:scale-[1.01] flex flex-col justify-between h-32">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-white">Wire Transfer</h4>
+              <p class="text-[11px] text-gray-400">Real-Time Settle</p>
+            </div>
+          </div>
+
+          <!-- Action 2: Apply for Loan -->
+          <div onclick="showNotification('Loan desk requires active tier review to process applications.')" class="bg-brand-navyCard border border-gray-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition duration-200 hover:scale-[1.01] flex flex-col justify-between h-32">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-white">Apply for Loan</h4>
+              <p class="text-[11px] text-gray-400">Credit Desk</p>
+            </div>
+          </div>
+
+          <!-- Action 3: Pay Bills -->
+          <div onclick="showNotification('Bill Payment Concierge route ready.')" class="bg-brand-navyCard border border-gray-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition duration-200 hover:scale-[1.01] flex flex-col justify-between h-32">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-white">Pay Bills</h4>
+              <p class="text-[11px] text-gray-400">Concierge Route</p>
+            </div>
+          </div>
+
+          <!-- Action 4: Account Statements -->
+          <div onclick="downloadStatementDemo()" class="bg-brand-navyCard border border-gray-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition duration-200 hover:scale-[1.01] flex flex-col justify-between h-32">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <div>
+              <h4 class="font-bold text-sm text-white">Statements</h4>
+              <p class="text-[11px] text-gray-400">Download & Print</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: WIRE TRANSFER FORM -->
+      <div id="tab-content-transfer" class="hidden bg-brand-navyCard border border-gray-800 rounded-3xl p-6 shadow-xl space-y-5">
+        <div>
+          <h3 class="text-lg font-bold text-white">Wire Transfer Terminal</h3>
+          <p class="text-xs text-gray-400">Execute instant settlement transfer to verified client destination</p>
+        </div>
+
+        <form onsubmit="handleExecuteTransfer(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-300 uppercase mb-1">Beneficiary Name</label>
+              <input type="text" id="transfer-name" value="EDITABLE_ACCOUNT_NAME" required class="w-full bg-brand-navyInput border border-gray-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-300 uppercase mb-1">Bank Name</label>
+              <input type="text" id="transfer-bank" value="EDITABLE_BANK_NAME" required class="w-full bg-brand-navyInput border border-gray-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
